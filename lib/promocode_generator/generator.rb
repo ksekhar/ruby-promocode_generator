@@ -3,13 +3,13 @@ require 'active_support/core_ext'
 
 class PromocodeGenerator::Generator
 
-  ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  NUMBERS = '1234567890'
-  DEFAULT_LENGTH = 10
-  DEFAULT_PREFIX = ''
+  ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' # перечисление всех букв, которые будут использоваться
+  NUMBERS = '1234567890' # перечисление всех цифр, которые будут использоваться
+  DEFAULT_LENGTH = 10 # количество символов в промокоде по умолчанию
+  DEFAULT_PREFIX = '' # префикс в который можно вписать начальные буквы промокода
   DEFAULT_RULES = { exclusion: { excluded_characters: 'AEIOU10' } }
   DEFAULT_SEPARATOR = ''
-
+  
   attr_accessor :length, :prefix, :rules, :retries, :separator
 
   def initialize(options = {})
@@ -30,10 +30,10 @@ class PromocodeGenerator::Generator
     begin
       part << checkdigit_alg_1(part)
     rescue
-      # Due to the randomness checkdigit_alg_1 method would return nil
-      # this raises TypeError when inserting a nil into a string
-      # so we retry till we don't get nil anymore,
-      # the cost of this retry is negligible as it is observed in the above benchmark results
+    # Из-за проверки случайности метод digit_alg_1 вернет ноль
+    # это вызывает ошибку типа при вставке нуля в строку
+    # итак, мы повторяем попытку, пока больше не получим ноль
+    # затраты на эту попытку незначительны, как это видно из приведенных выше результатов тестирования
       @retries += 1
       retry
     end
